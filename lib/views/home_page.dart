@@ -13,7 +13,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     web3dartServices = Web3DartServices()
-      ..setCurrentAddressFromHex('0xF860A2953f79cF00e18e168A438C0d796D543B4e')
+      ..setCurrentAddressFromHex('0xB449074a8167c1B68fD9Ab8b3d687129f98C1122')
       ..init();
     super.initState();
   }
@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
             gradient: LinearGradient(
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
-              colors: [Colors.red, Colors.yellow],
+              colors: [Color(0xFF283593), Colors.white70],
             ),
           ),
           child: Column(
@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
                 child: Align(
                   alignment: Alignment.center,
                   child: Text(
-                    'SMART CONTRACT',
+                    'RAFFLE',
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
