@@ -30,3 +30,4 @@ flutter:
     - src/abis/Investment.json
     - contracts/.
     - contracts/Investment.sol
+    - test_resources/.

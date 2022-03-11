@@ -1,44 +1,61 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../models/Contract.dart';
 
 class SolcBuilder {
   Map<String, String>? params;
 
+  String? documentsPath;
+
+  String? tempPath;
+
   SolcBuilder({this.params});
 
-  FutureOr<void> build() async {
-    //
-    // final response = await _solc(
-    //   {
-    //     'language': 'Solidity',
-    //     'sources': {
-    //       'contract': {
-    //         'content': contractSource,
-    //       }
-    //     },
-    //     'settings': {
-    //       'outputSelection': {
-    //         '*': {
-    //           '*': ['metadata']
-    //         }
-    //       },
-    //     },
-    //   },
-    // );
-    //
-    // final contracts =
-    // ((response as Map)['contracts'] as Map)['contract'] as Map;
-    // final contract = contracts.values.single as Map;
-    //
+  Future<Object?> buildSolcObject() async {
+
+    var my_data = json.decode(await getContractJson());
+
+    Object? response = await _solc(my_data);
+
+
     // final outputId = inputId.changeExtension('.abi.json');
     // final meta = json.decode(contract['metadata'] as String) as Map;
     // await buildStep.writeAsString(outputId, json.encode(meta['output']));
+
+    return response;
+  }
+
+  Future<void> generateAbiFileFromContract(Contract contract) async {
+    final meta = json.decode(contract.metadata);
+    final output = meta['output'];
+    _writeAbiFile(contract.name, output);
+  }
+
+  Future<bool> _writeAbiFile(String fileName, dynamic object) async {
+    try {
+      File myFile = File('$documentsPath/${fileName}ABI.json');
+      await myFile.writeAsString(jsonEncode(object));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future getPaths() async {
+    Directory tempDir = await getTemporaryDirectory();
+    tempPath = tempDir.path;
+
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    documentsPath = appDocDir.path;
+  }
+
+  Future<String> getContractJson() {
+    return rootBundle.loadString('test_resources/Investment.json');
   }
 
   Future<Object?> _solc(Object? input) async {
