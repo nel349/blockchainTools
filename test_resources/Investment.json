@@ -1,0 +1,19 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "Investment.sol": {
+      "urls": [
+        "contracts/Investment.sol"
+      ]
+    }
+  },
+  "settings": {
+    "outputSelection": {
+      "*": {
+        "*": [
+          "metadata"
+        ]
+      }
+    }
+  }
+}
