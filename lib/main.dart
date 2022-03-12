@@ -1,5 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'views/home_page.dart';
+import 'views/webview_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Smart Contract',
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: WebViewExample(),
     );
   }
 }
