@@ -12,6 +12,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../services/builder_solc.dart';
+
 
 void main() => runApp(MaterialApp(home: WebViewExample()));
 
@@ -184,6 +186,7 @@ enum MenuOptions {
   loadHtmlString,
   transparentBackground,
   setCookie,
+  fillText,
 }
 
 class SampleMenu extends StatelessWidget {
@@ -204,6 +207,9 @@ class SampleMenu extends StatelessWidget {
             switch (value) {
               case MenuOptions.showUserAgent:
                 _onShowUserAgent(controller.data!, context);
+                break;
+              case MenuOptions.fillText:
+                _onCompileSolc(controller.data!, context);
                 break;
               case MenuOptions.listCookies:
                 _onListCookies(controller.data!, context);
@@ -248,6 +254,10 @@ class SampleMenu extends StatelessWidget {
               value: MenuOptions.showUserAgent,
               child: const Text('Show user agent'),
               enabled: controller.hasData,
+            ),
+            const PopupMenuItem(
+              value: MenuOptions.fillText,
+              child: const Text('Fill Text Field')
             ),
             const PopupMenuItem<MenuOptions>(
               value: MenuOptions.listCookies,
@@ -315,7 +325,10 @@ class SampleMenu extends StatelessWidget {
   Future<void> _onCompileSolc(WebViewController controller,
       BuildContext context)  async {
 
+    final str = await SolcBuilder.getContractSol('test_resources/Investment.sol');
 
+    await controller.runJavascript('document.getElementById("source").value = "$str";'
+    'loadSolcVersion();');
   }
 
   Future<void> _onListCookies(

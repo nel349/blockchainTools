@@ -1,4 +1,8 @@
-var exampleSource = " ";
+//const fs = require('fs')
+//
+//const fileContents = fs.readFileSync('./Investment.json').toString()
+
+var exampleSource = "";
 var optimize = 1;
 var compiler;
 
@@ -59,7 +63,7 @@ window.onload = function() {
     BrowserSolc.getVersions(function(soljsonSources, soljsonReleases) {
         populateVersions(soljsonSources);
 
-        document.getElementById("versions").value = soljsonReleases["0.4.5"];
+        document.getElementById("versions").value = soljsonReleases["0.7.1"];
 
         loadSolcVersion();
     });

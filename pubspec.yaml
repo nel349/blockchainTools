@@ -29,6 +29,6 @@ flutter:
 
   assets:
     - src/abis/Investment.json
-    - contracts/.
+    - contracts/
     - contracts/Investment.sol
-    - test_resources/.
+    - test_resources/

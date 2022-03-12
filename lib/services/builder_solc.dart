@@ -54,8 +54,13 @@ class SolcBuilder {
     documentsPath = appDocDir.path;
   }
 
-  Future<String> getContractJson() {
+  static Future<String> getContractJson() {
     return rootBundle.loadString('test_resources/Investment.json');
+  }
+
+  static Future<String> getContractSol(String filename) async {
+    final str = await rootBundle.loadString(filename);
+    return str.replaceAll("\n","\\n");
   }
 
   Future<Object?> _solc(Object? input) async {
@@ -66,7 +71,7 @@ class SolcBuilder {
     return proc.stdout.transform(jsonUtf8.decoder).first;
   }
 
-  Future<String> getFileContractAsString(String fileContractPath) async {
+  static Future<String> getFileContractAsString(String fileContractPath) async {
     final file = new File(fileContractPath);
     final result = await file.readAsString();
     return result;

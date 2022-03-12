@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.5.16;
+pragma solidity 0.7.1;
 
 contract Investment {
     event CheckBalance(address indexed from, uint256 amount);
-    // amount returned to user
+    // amount retu  rned to user
     uint256 balanceAmount;
     // amount deposited by user
     uint256 depositAmount;
@@ -12,13 +12,11 @@ contract Investment {
     // amount to be returned in addition to depositAmount to user
     uint256 returnOnInvestment;
 
-    constructor() public {
+    constructor () {
         balanceAmount = getBalanceAmount();
         depositAmount = 0;
         thresholdAmount = 12;
         returnOnInvestment = 3;
-
-        emit CheckBalance(msg.sender, balanceAmount );
     }
 
     // read operation
