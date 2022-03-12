@@ -23,11 +23,38 @@ class SolcBuilder {
     Object? response = await _solc(my_data);
 
 
+
+
     // final outputId = inputId.changeExtension('.abi.json');
     // final meta = json.decode(contract['metadata'] as String) as Map;
     // await buildStep.writeAsString(outputId, json.encode(meta['output']));
 
     return response;
+  }
+
+  static Future<String> constructStandartSolcJsonString() async {
+
+    final contractText = await getContractSol("test_resources/Investment.sol");
+
+    var jsonSolcStr ="""
+    {
+  "language": "Solidity",
+  "sources": {
+    "Investment.sol": {
+      "content": "$contractText"
+    }
+  },
+  "settings": {
+    "outputSelection": {
+      "*": {
+        "*": ["abi","evm.bytecode"]
+      }
+    }
+  }
+}
+    """;
+    // final jsonSolc = json.decode(jsonSolcStr);
+    return jsonSolcStr;
   }
 
   Future<void> generateAbiFileFromContract(Contract contract) async {

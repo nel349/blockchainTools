@@ -1,0 +1,15 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "Investment.sol": {
+      "content": "// SPDX-License-Identifier: GPL-3.0\npragma solidity 0.7.1;\n\ncontract Investment {\n    event CheckBalance(address indexed from, uint256 amount);\n    // amount retu  rned to user\n    uint256 balanceAmount;\n    // amount deposited by user\n    uint256 depositAmount;\n    // minimum amount to be deposited by user\n    uint256 thresholdAmount;\n    // amount to be returned in addition to depositAmount to user\n    uint256 returnOnInvestment;\n\n    constructor () {\n        balanceAmount = getBalanceAmount();\n        depositAmount = 0;\n        thresholdAmount = 12;\n        returnOnInvestment = 3;\n    }\n\n    // read operation\n    function getBalanceAmount() public view returns (uint256) {\n        return msg.sender.balance/(1e16);\n    }\n\n    // read operation\n    function getDepositAmount() public view returns (uint256) {\n        return depositAmount;\n    }\n\n    // write operation\n    function addDepositAmount(uint256 amount) public {\n        depositAmount = depositAmount + amount;\n\n        if (depositAmount >= thresholdAmount) {\n            balanceAmount = depositAmount + returnOnInvestment;\n        }\n    }\n\n    // write function\n    function withdrawBalance() public {\n        balanceAmount = 0;\n        depositAmount = 0;\n    }\n}\n"
+    }
+  },
+  "settings": {
+    "outputSelection": {
+      "*": {
+        "*": ["abi","evm.bytecode"]
+      }
+    }
+  }
+}

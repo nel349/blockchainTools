@@ -5,6 +5,7 @@
 var exampleSource = "";
 var optimize = 1;
 var compiler;
+var jsonSolcStandard;
 
 function getSourceCode() {
     return document.getElementById("source").value;
@@ -68,3 +69,22 @@ window.onload = function() {
         loadSolcVersion();
     });
 };
+
+//autoload the most recent compiler (asynchronously)
+function setupCompiler(){
+  var outerThis = this;
+  setTimeout(function(){
+    window.BrowserSolc.getVersions(function(soljsonSources, soljsonReleases) {
+      var compilerVersion = soljsonReleases[_.keys(soljsonReleases)[0]];
+      console.log("Browser-solc compiler version : " + compilerVersion);
+      window.BrowserSolc.loadVersion(compilerVersion, function(c) {
+        compiler = c;
+        outerThis.setState({statusMessage:"ready!"},function(){
+          console.log("Solc Version Loaded: " + compilerVersion);
+        });
+      });
+    });
+  },1000);
+}
+
+

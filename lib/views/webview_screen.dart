@@ -325,10 +325,28 @@ class SampleMenu extends StatelessWidget {
   Future<void> _onCompileSolc(WebViewController controller,
       BuildContext context)  async {
 
-    final str = await SolcBuilder.getContractSol('test_resources/Investment.sol');
+    // final str = await SolcBuilder.getContractSol('test_resources/Investment.sol');
 
-    await controller.runJavascript('document.getElementById("source").value = "$str";'
-    'loadSolcVersion();');
+    final jsonStr = await SolcBuilder.constructStandartSolcJsonString();
+
+    await controller.runJavascript('setupCompiler()');
+
+    final result = await controller.runJavascriptReturningResult('jsonSolcStandard=JSON.stringify($jsonStr);''compiler.compile(jsonSolcStandard)');
+
+    final resultEncodedJson = json.decode(result);
+    print("Compilation Result: $result");
+    // await controller.runJavascript('document.getElementById("source").value = "$str";'
+    // 'loadSolcVersion();' '');
+
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text('Compilation Result ended!')
+        ],
+      ),
+    ));
   }
 
   Future<void> _onListCookies(
