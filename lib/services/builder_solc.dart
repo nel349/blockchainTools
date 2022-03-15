@@ -17,27 +17,14 @@ class SolcBuilder {
   SolcBuilder({this.params});
 
   Future<Object?> buildSolcObject() async {
-
-    var my_data = json.decode(await getContractJson());
-
-    Object? response = await _solc(my_data);
-
-
-
-
-    // final outputId = inputId.changeExtension('.abi.json');
-    // final meta = json.decode(contract['metadata'] as String) as Map;
-    // await buildStep.writeAsString(outputId, json.encode(meta['output']));
-
+    var myData = json.decode(await getContractJson());
+    Object? response = await _solc(myData);
     return response;
   }
 
   static Future<String> constructStandartSolcJsonString() async {
-
     final contractText = await getContractSol("test_resources/Investment.sol");
-
     var jsonSolcStr ='{"language": "Solidity","sources": {"Investment.sol": {"content": "$contractText"}},"settings": {"outputSelection": {"*": {"*": ["abi","evm.bytecode"]}}}}';
-    // final jsonSolc = json.decode(jsonSolcStr);
     return jsonSolcStr.replaceAll("\n"," ");
   }
 

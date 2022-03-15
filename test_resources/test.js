@@ -1,7 +1,9 @@
 var exampleSource = "pragma solidity ^0.7.1; contract Investment {constructor() {}}";
 var optimize = 1;
 var compiler;
-var jsonSolcStandard;
+var sourceCode="";
+
+// exampleSource = "pragma solidity ^0.7.1;  contract Investment {constructor() {}}"
 
 function getSourceCode() {
     return document.getElementById("source").value;
@@ -34,6 +36,7 @@ function solcCompile(compiler) {
     var stringResult = JSON.stringify(result);
     document.getElementById("compile-output").value = stringResult;
     status("Compile Complete.");
+    return stringResult;
 }
 
 function loadSolcVersion() {
@@ -47,7 +50,7 @@ function loadSolcVersion() {
 }
 
 window.onload = function() {
-    document.getElementById("source").value = exampleSource;
+    document.getElementById("source").value = solcInput;
 
     document.getElementById("versions").onchange = loadSolcVersion;
 
@@ -82,10 +85,6 @@ function setupCompiler(){
     },1000);
   }
 
-function getSourceJson() {
-    return jsonSolcStandard;
-}
-
 function loadSolcVersionFromConsole() {
     status("Loading Solc: " + getVersion());
     BrowserSolc.loadVersion(getVersion(), function(c) {
@@ -100,7 +99,7 @@ var solcInput = {
     language: "Solidity",
     sources: { 
         contract: {
-            content: "pragma solidity ^0.7.1;  contract Investment {constructor() {}}"
+            content: sourceCode
         }
      },
     settings: {
