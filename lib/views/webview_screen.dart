@@ -324,17 +324,19 @@ class SampleMenu extends StatelessWidget {
 
   Future<void> _onCompileSolc(WebViewController controller,
       BuildContext context)  async {
-
-    // final str = await SolcBuilder.getContractSol('test_resources/Investment.sol');
-
     final jsonStr = await SolcBuilder.constructStandartSolcJsonString();
-
     await controller.runJavascript('setupCompiler()');
+    final result = await controller.runJavascriptReturningResult('jsonSolcStandard=JSON.stringify($jsonStr);'
+        'compiler.compile(jsonSolcStandard)');
+    final resultJson = await json.decode(result);
+    await controller.runJavascript('document.getElementById("compile-output").value = "";');
+    //'document.getElementById("compile-output").value =${result.replaceAll("\n"," ")}'
 
-    final result = await controller.runJavascriptReturningResult('jsonSolcStandard=JSON.stringify($jsonStr);''compiler.compile(jsonSolcStandard)');
-
-    final resultEncodedJson = json.decode(result);
-    print("Compilation Result: $result");
+    // final builder = SolcBuilder();
+    // await builder.getPaths();
+    // await builder.writeAbiFile("Investment_test", result);
+    // final resultEncodedJson = json.decode(result);
+    print("Compilation Result: $resultJson");
     // await controller.runJavascript('document.getElementById("source").value = "$str";'
     // 'loadSolcVersion();' '');
 

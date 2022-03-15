@@ -1,8 +1,4 @@
-//const fs = require('fs')
-//
-//const fileContents = fs.readFileSync('./Investment.json').toString()
-
-var exampleSource = "";
+var exampleSource = "pragma solidity ^0.7.1; contract Investment {constructor() {}}";
 var optimize = 1;
 var compiler;
 var jsonSolcStandard;
@@ -34,7 +30,7 @@ function populateVersions(versions) {
 function solcCompile(compiler) {
     status("compiling");
     document.getElementById("compile-output").value = "";
-    var result = compiler.compile(getSourceCode(), optimize);
+    var result = compiler.compile(solcInput, optimize);
     var stringResult = JSON.stringify(result);
     document.getElementById("compile-output").value = stringResult;
     status("Compile Complete.");
@@ -70,21 +66,52 @@ window.onload = function() {
     });
 };
 
-//autoload the most recent compiler (asynchronously)
 function setupCompiler(){
-  var outerThis = this;
-  setTimeout(function(){
-    window.BrowserSolc.getVersions(function(soljsonSources, soljsonReleases) {
-      var compilerVersion = soljsonReleases[_.keys(soljsonReleases)[0]];
-      console.log("Browser-solc compiler version : " + compilerVersion);
-      window.BrowserSolc.loadVersion(compilerVersion, function(c) {
-        compiler = c;
-        outerThis.setState({statusMessage:"ready!"},function(){
-          console.log("Solc Version Loaded: " + compilerVersion);
+    var outerThis = this;
+    setTimeout(function(){
+      window.BrowserSolc.getVersions(function(soljsonSources, soljsonReleases) {
+        var compilerVersion = soljsonReleases[_.keys(soljsonReleases)[0]];
+        console.log("Browser-solc compiler version : " + compilerVersion);
+        window.BrowserSolc.loadVersion(compilerVersion, function(c) {
+          compiler = c;
+          outerThis.setState({statusMessage:"ready!"},function(){
+            console.log("Solc Version Loaded: " + compilerVersion);
+          });
         });
       });
-    });
-  },1000);
+    },1000);
+  }
+
+function getSourceJson() {
+    return jsonSolcStandard;
 }
 
+function loadSolcVersionFromConsole() {
+    status("Loading Solc: " + getVersion());
+    BrowserSolc.loadVersion(getVersion(), function(c) {
+        compiler = c;
+        console.log("Solc Version Loaded: " + getVersion());
+        status("Solc loaded.  Compiling...");
+        solcCompile(compiler);
+    });
+}
 
+var solcInput = {
+    language: "Solidity",
+    sources: { 
+        contract: {
+            content: "pragma solidity ^0.7.1;  contract Investment {constructor() {}}"
+        }
+     },
+    settings: {
+        outputSelection: {
+            "*": {
+              "*": [
+                "abi","evm.bytecode"
+              ]
+            },
+        }
+    }
+};
+
+solcInput = JSON.stringify(solcInput);

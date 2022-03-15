@@ -39,3 +39,11 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+/test_resources/node_modules/
+/test_resources/.eslintrc.js
+/test_resources/package.json
+/test_resources/package-lock.json
+/test_resources/require.cjs
+/test_resources/web3.min.js
+/test_resources/r.js
+/test_resources/browser-solc.js
