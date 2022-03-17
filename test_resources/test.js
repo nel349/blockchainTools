@@ -85,16 +85,6 @@ function setupCompiler(){
     },1000);
   }
 
-function loadSolcVersionFromConsole() {
-    status("Loading Solc: " + getVersion());
-    BrowserSolc.loadVersion(getVersion(), function(c) {
-        compiler = c;
-        console.log("Solc Version Loaded: " + getVersion());
-        status("Solc loaded.  Compiling...");
-        solcCompile(compiler);
-    });
-}
-
 var solcInput = {
     language: "Solidity",
     sources: { 
