@@ -1,11 +1,4 @@
-
-// const HDWalletProvider = require("hd-wallet-provider");
-
 const HDWalletProvider = require("hdwallet-provider");
-
-// const { Web3 } = require("./web3.min");
-
-// import HDWalletProvider from './bundle.js'
 
 //load single private key as string
 var provider = new HDWalletProvider("afd01d2beeb0db02600fcfee2a85805e6b59a32d6bc89cfa91ef55926e289c3b", "https://ropsten.infura.io/v3/a2293dab520a45fba5a5ab184d14e8ab");
@@ -29,10 +22,10 @@ let parameter = {
     gasPrice: web3_instance.utils.toHex(web3_instance.utils.toWei('35', 'gwei'))
 }
 
-// function deployContract() {
+function deployContract() {
     deploy_contract.deploy(payload).send(parameter, (_, transactionHash) => {
         console.log('Transaction Hash :', transactionHash);
     }).on('confirmation', () => {}).then((newContractInstance) => {
         console.log('Deployed Contract Address : ', newContractInstance.options.address);
     });
-// }
+}
