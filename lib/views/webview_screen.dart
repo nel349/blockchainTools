@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../services/builder_solc.dart';
+import '../services/deploy_contract_stream.dart';
 
 void main() => runApp(MaterialApp(home: WebViewExample()));
 
@@ -205,6 +206,14 @@ class SampleMenu extends StatelessWidget {
     print("Compilation Result: $resultJson");
     print("Compilation abi: $abi");
     print("Compilation bytecode: $bytecode");
+
+    // Deploy contract
+    // await controller.runJavascript('deployContract()');
+    await controller.runJavascript('deployContract()');
+    final contractStream = DeployContractStream();
+    contractStream.checkJavascriptResult(controller)
+        .firstWhere((element) => element.startsWith('0x'))
+        .then((value) => print("Transaction Hash: $value"));
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Column(

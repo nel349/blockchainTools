@@ -22,10 +22,17 @@ let parameter = {
     gasPrice: web3_instance.utils.toHex(web3_instance.utils.toWei('35', 'gwei'))
 }
 
+var transactionHashResult = "";
+
 function deployContract() {
     deploy_contract.deploy(payload).send(parameter, (_, transactionHash) => {
         console.log('Transaction Hash :', transactionHash);
+        transactionHashResult = transactionHash;
     }).on('confirmation', () => {}).then((newContractInstance) => {
         console.log('Deployed Contract Address : ', newContractInstance.options.address);
     });
+}
+
+function getTransactionHashResult() {
+    return transactionHashResult;
 }
