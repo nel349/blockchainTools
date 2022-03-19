@@ -206,9 +206,9 @@ class SampleMenu extends StatelessWidget {
     print("Compilation Result: $resultJson");
     print("Compilation abi: $abi");
     print("Compilation bytecode: $bytecode");
-
+    final abiStr = json.encode(abi).toString();
     // Deploy contract
-    // await controller.runJavascript('deployContract()');
+    await controller.runJavascript('abi=JSON.stringify($abiStr);' 'bytecode="$bytecode"');
     await controller.runJavascript('deployContract()');
     final contractStream = DeployContractStream();
     contractStream.checkJavascriptResult(controller)
