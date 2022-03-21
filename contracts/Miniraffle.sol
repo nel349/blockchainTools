@@ -13,7 +13,8 @@ contract MiniRaffle {
     event End(address winner, uint amount);
 
     uint public prize; // wei
-    mapping(uint => TicketVoucher) public tickets; // contains addresses and maps to ticket voucher.
+    mapping(uint => address) public tickets; // maps id participant to address
+    mapping(address => TicketVoucher) public participants; // maps address participant to ticket voucher
     uint public minimumTickets;
     address payable public host;
     uint public ticketPrice;
@@ -22,12 +23,14 @@ contract MiniRaffle {
     bool public started;
     bool public ended;
 
+    uint private ticketId = 0;
+
     // Initializing the state variable
     uint randNonce = 0;
 
     struct TicketVoucher {
-        address payable owner;
-        int count; //number of tickets bought
+        bool exists;
+        uint[] ticketsBought; //tickets bought ids
     }
 
     constructor(uint _prize, uint _ticketPrice, uint daysDuration) {
@@ -42,7 +45,7 @@ contract MiniRaffle {
         require(block.timestamp > endAt + 1 minutes, "not ended");
         require(winner == address(0), "no winner yet!");
         uint index = randMod(minimumTickets);
-        winner = tickets[index].owner;
+        winner = payable(tickets[index]);
     }
 
     function start() external payable {
@@ -66,4 +69,24 @@ contract MiniRaffle {
         return address(this).balance;
     }
 
+    function buyTicket() external payable {
+        require(started, "not started");
+        require(block.timestamp < endAt, "raffle has ended");
+        require(msg.value >= ticketPrice, "value must be above the ticket price");
+
+        TicketVoucher storage ticketVoucher = participants[msg.sender];
+        if (ticketVoucher.exists) {
+            ticketVoucher.ticketsBought.push(ticketId);
+        } else {
+            uint[] memory _ticketsBought = new uint[](ticketId);
+            participants[msg.sender] = TicketVoucher({exists: true, ticketsBought:_ticketsBought});
+        }
+        tickets[ticketId] = msg.sender;
+        ticketId++;
+        emit TicketBought(msg.sender, msg.value);
+    }
+
+    function getTicketsBoughtByAddress(address addr) view external returns (uint[] memory) {
+        return participants[addr].ticketsBought;
+    }
 }
