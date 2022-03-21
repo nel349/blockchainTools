@@ -9,21 +9,23 @@ contract MiniRaffle {
 
     event Started();
     event TicketBought(address indexed sender, uint amount);
-    event Withdraw(address indexed bidder, uint amount);
+    event Withdraw(address indexed participant, uint amount);
+    event WithdrawByWinner(address indexed winner, uint amount);
     event End(address winner, uint amount);
 
     uint public prize; // wei
-    mapping(uint => address) public tickets; // maps id participant to address
+    mapping(uint => address) public tickets; // maps id ticket to participant address
     mapping(address => TicketVoucher) public participants; // maps address participant to ticket voucher
     uint public minimumTickets;
     address payable public host;
     uint public ticketPrice;
-    address payable winner;
+    address payable public winner;
     uint public endAt;
     bool public started;
     bool public ended;
 
     uint private ticketId = 0;
+    uint public ticketCount;
 
     // Initializing the state variable
     uint randNonce = 0;
@@ -71,22 +73,70 @@ contract MiniRaffle {
 
     function buyTicket() external payable {
         require(started, "not started");
-        require(block.timestamp < endAt, "raffle has ended");
-        require(msg.value >= ticketPrice, "value must be above the ticket price");
+        require(block.timestamp < endAt, "raffle has ended, time expired");
+        require(msg.value == ticketPrice, "value must equal to ticket price");
 
         TicketVoucher storage ticketVoucher = participants[msg.sender];
         if (ticketVoucher.exists) {
             ticketVoucher.ticketsBought.push(ticketId);
         } else {
-            uint[] memory _ticketsBought = new uint[](ticketId);
-            participants[msg.sender] = TicketVoucher({exists: true, ticketsBought:_ticketsBought});
+            ticketVoucher.exists = true;
+            ticketVoucher.ticketsBought.push(ticketId);
         }
         tickets[ticketId] = msg.sender;
         ticketId++;
+        ticketCount++;
         emit TicketBought(msg.sender, msg.value);
     }
 
-    function getTicketsBoughtByAddress(address addr) view external returns (uint[] memory) {
+    function getTicketsBoughtByAddress(address addr) view public returns (uint[] memory) {
         return participants[addr].ticketsBought;
+    }
+
+    function getTotalAmountTicketsBoughtByAddress(address addr) view public returns (uint result) {
+        uint numTicketsBought = getTicketsBoughtByAddress(addr).length;
+        result = numTicketsBought * ticketPrice;
+    }
+
+    function withdraw () external {
+        if (block.timestamp < endAt) {
+            uint bal = getTotalAmountTicketsBoughtByAddress(msg.sender);
+            removeTicketsAndParticipant(msg.sender);
+
+            payable(msg.sender).transfer(bal);
+            emit Withdraw(msg.sender, bal);
+        }
+        else if (msg.sender == winner && (block.timestamp >= endAt || ended)) {
+            payable(winner).transfer(prize);
+            emit WithdrawByWinner(winner, prize);
+        }
+        else if ( (ended || ticketCount < minimumTickets) && block.timestamp > endAt) {
+            uint bal = getTotalAmountTicketsBoughtByAddress(msg.sender);
+
+            removeTicketsAndParticipant(msg.sender);
+
+            payable(msg.sender).transfer(bal);
+            emit Withdraw(msg.sender, bal);
+        }
+    }
+
+    function changeEndAtDateTo(uint _endAt) external {
+        endAt = _endAt;
+    }
+
+    function getNowTime() view external returns (uint) {
+        return block.timestamp;
+    }
+
+    function removeTicketsAndParticipant(address addr) internal {
+        //Remove from tickets map
+        uint[] memory idsToDelete = getTicketsBoughtByAddress(addr);
+        for (uint i = 0; i < idsToDelete.length; i++) {
+            delete tickets[idsToDelete[i]];
+            ticketCount--;
+        }
+
+        //Remove from participant map
+        delete participants[addr];
     }
 }
