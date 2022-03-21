@@ -24,7 +24,7 @@ contract MiniRaffle {
     bool public started;
     bool public ended;
 
-    uint private ticketId = 0;
+    // uint private ticketId = 0;
     uint public ticketCount;
 
     // Initializing the state variable
@@ -78,13 +78,13 @@ contract MiniRaffle {
 
         TicketVoucher storage ticketVoucher = participants[msg.sender];
         if (ticketVoucher.exists) {
-            ticketVoucher.ticketsBought.push(ticketId);
+            ticketVoucher.ticketsBought.push(ticketCount);
         } else {
             ticketVoucher.exists = true;
-            ticketVoucher.ticketsBought.push(ticketId);
+            ticketVoucher.ticketsBought.push(ticketCount);
         }
-        tickets[ticketId] = msg.sender;
-        ticketId++;
+        tickets[ticketCount] = msg.sender;
+        // ticketId++;
         ticketCount++;
         emit TicketBought(msg.sender, msg.value);
     }
@@ -99,29 +99,33 @@ contract MiniRaffle {
     }
 
     function withdraw () external {
-        if (block.timestamp < endAt) {
-            uint bal = getTotalAmountTicketsBoughtByAddress(msg.sender);
-            removeTicketsAndParticipant(msg.sender);
-
-            payable(msg.sender).transfer(bal);
-            emit Withdraw(msg.sender, bal);
-        }
-        else if (msg.sender == winner && (block.timestamp >= endAt || ended)) {
+        require(block.timestamp >= endAt, "cannot withdraw before ended or due date");
+        if (msg.sender == winner && (block.timestamp >= endAt || ended)) {  // Winner case
             payable(winner).transfer(prize);
             emit WithdrawByWinner(winner, prize);
         }
-        else if ( (ended || ticketCount < minimumTickets) && block.timestamp > endAt) {
+        else if ( (ended || ticketCount < minimumTickets) && block.timestamp >= endAt) { // When time has expired and the minimum spot count is not filled
             uint bal = getTotalAmountTicketsBoughtByAddress(msg.sender);
 
+            if (bal == 0) {
+                revert("Unable to withdraw: your balance is 0 in this raffle");
+            }
             removeTicketsAndParticipant(msg.sender);
 
             payable(msg.sender).transfer(bal);
             emit Withdraw(msg.sender, bal);
+        } else {
+            revert("Unable to withdraw");
         }
     }
 
     function changeEndAtDateTo(uint _endAt) external {
         endAt = _endAt;
+    }
+
+    // REMOVE!! ONLY FOR TESTING PURPOSES
+    function changeWinner(address addr) external {
+        winner = payable(addr);
     }
 
     function getNowTime() view external returns (uint) {
