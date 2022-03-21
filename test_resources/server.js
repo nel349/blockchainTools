@@ -8,16 +8,13 @@ const web3_instance = new Web3(provider);
 
 var transactionHashResult = "";
 var bytecode = '8908098098098098';
-let abi = '[]';
+var abi = '[]';
 let fromEthAddress = '';
 let privatKey = '';
 
-let deploy_contract = new web3_instance.eth.Contract(JSON.parse(abi));
+var deploy_contract = new web3_instance.eth.Contract(JSON.parse(abi));
 
 let account = '0x33d312c90831F42840E412DC2094a61a99d5Cb57'; 
-let payload = {
-    data: bytecode
-}
 
 let parameter = {
     from: account,
@@ -26,6 +23,10 @@ let parameter = {
 }
 
 function deployContract() {
+    let payload = {
+        data: bytecode
+    }
+
     deploy_contract.deploy(payload).send(parameter, (_, transactionHash) => {
         console.log('Transaction Hash :', transactionHash);
         transactionHashResult = transactionHash;

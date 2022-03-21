@@ -173,7 +173,7 @@ class SampleMenu extends StatelessWidget {
           itemBuilder: (BuildContext context) => <PopupMenuItem<MenuOptions>>[
             const PopupMenuItem(
               value: MenuOptions.fillText,
-              child: const Text('Fill Text Field')
+              child: const Text('Compile and Deploy Contract')
             ),
             const PopupMenuItem<MenuOptions>(
               value: MenuOptions.loadHtmlString,
@@ -206,9 +206,18 @@ class SampleMenu extends StatelessWidget {
     print("Compilation Result: $resultJson");
     print("Compilation abi: $abi");
     print("Compilation bytecode: $bytecode");
-    final abiStr = json.encode(abi).toString();
+    final abiStr = json.encode(abi);
     // Deploy contract
     await controller.runJavascript('abi=JSON.stringify($abiStr);' 'bytecode="$bytecode"');
+
+    var b = await controller.runJavascriptReturningResult('bytecode');
+    var a = await controller.runJavascriptReturningResult('abi');
+    // var c = await controller.runJavascriptReturningResult('payload');
+    // await controller.runJavascript("initDeployment");
+
+    b = await controller.runJavascriptReturningResult('bytecode');
+    a = await controller.runJavascriptReturningResult('abi');
+    // c = await controller.runJavascriptReturningResult('payload');
     await controller.runJavascript('deployContract()');
     final contractStream = DeployContractStream();
     contractStream.checkJavascriptResult(controller)
