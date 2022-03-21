@@ -38,9 +38,9 @@ contract MiniRaffle {
         host = payable(msg.sender);
     }
 
-    function drawWinner () public {
-        require(block.timestamp > endAt + 1 minutes);
-        require(winner == address(0));
+    function drawWinner () external {
+        require(block.timestamp > endAt + 1 minutes, "not ended");
+        require(winner == address(0), "no winner yet!");
         uint index = randMod(minimumTickets);
         winner = tickets[index].owner;
     }
