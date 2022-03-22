@@ -11,6 +11,7 @@ contract MiniRaffle {
     event TicketBought(address indexed sender, uint amount);
     event Withdraw(address indexed participant, uint amount);
     event WithdrawByWinner(address indexed winner, uint amount);
+    event DrawWinner(address indexed winner);
     event End(address winner, uint amount);
 
     uint public prize; // wei
@@ -45,9 +46,11 @@ contract MiniRaffle {
 
     function drawWinner () external {
         require(block.timestamp > endAt + 1 minutes, "not ended");
-        require(winner == address(0), "no winner yet!");
+        require(winner == address(0), "already a winner");
         uint index = randMod(minimumTickets);
         winner = payable(tickets[index]);
+
+        emit DrawWinner(winner);
     }
 
     function start() external payable {
