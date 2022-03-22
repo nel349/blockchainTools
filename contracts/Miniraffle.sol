@@ -2,17 +2,15 @@
 pragma solidity ^0.8.1;
 
 contract MiniRaffle {
-
     // one ether = 1000000000000000000
     // 0.1 ether = 100000000000000000
-
 
     event Started();
     event TicketBought(address indexed sender, uint amount);
     event Withdraw(address indexed participant, uint amount);
     event WithdrawByWinner(address indexed winner, uint amount);
     event DrawWinner(address indexed winner);
-    event End(address winner, uint amount);
+    event EndWithWinner(address winner, uint amount);
 
     uint public prize; // wei
     mapping(uint => address) public tickets; // maps id ticket to participant address
@@ -44,7 +42,7 @@ contract MiniRaffle {
         host = payable(msg.sender);
     }
 
-    function drawWinner () external {
+    function drawWinner () public {
         require(block.timestamp > endAt + 1 minutes, "not ended");
         require(winner == address(0), "already a winner");
         uint index = randMod(minimumTickets);
@@ -145,5 +143,23 @@ contract MiniRaffle {
 
         //Remove from participant map
         delete participants[addr];
+    }
+
+    function end() external {
+        require(started, "not started");
+        require(block.timestamp >= endAt, "not ended");
+        require(!ended, "already ended");
+        require(host == msg.sender, "only host can end the raffle");
+
+        ended = true;
+        if (minimumTickets > ticketCount) {
+            host.transfer(prize);
+        } else {
+            drawWinner();
+            assert(winner != address(0));
+            winner.transfer(prize);
+            host.transfer(getBalance());
+            emit EndWithWinner(winner, prize);
+        }
     }
 }
