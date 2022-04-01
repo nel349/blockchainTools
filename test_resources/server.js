@@ -38,3 +38,5 @@ function deployContract() {
 function getTransactionHashResult() {
     return transactionHashResult;
 }
+
+// browserify -r ./hdwallet-provider.ts:hdwallet-provider  -p [ tsify --noImplicitAny] -o  hdwallet-provider-min.js
