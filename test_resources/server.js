@@ -39,4 +39,5 @@ function getTransactionHashResult() {
     return transactionHashResult;
 }
 
+//Convert ts script to js, then convert into a browser version. removing require dependencies. 
 // browserify -r ./hdwallet-provider.ts:hdwallet-provider  -p [ tsify --noImplicitAny] -o  hdwallet-provider-min.js
