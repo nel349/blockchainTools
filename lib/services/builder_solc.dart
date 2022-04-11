@@ -29,19 +29,9 @@ class SolcBuilder {
   }
 
   Future<void> generateAbiFileFromContract(Contract contract) async {
-    final meta = json.decode(contract.metadata);
-    final output = meta['output'];
-    writeAbiFile(contract.name, output);
-  }
-
-  Future<bool> writeAbiFile(String fileName, dynamic object) async {
-    try {
-      File myFile = File('$documentsPath/${fileName}ABI.json');
-      await myFile.writeAsString(jsonEncode(object));
-      return true;
-    } catch (e) {
-      return false;
-    }
+    // final meta = json.decode(contract.metadata);
+    // final output = meta['output'];
+    // Utils.writeFile(contract.name, output);
   }
 
   Future getPaths() async {

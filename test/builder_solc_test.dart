@@ -20,12 +20,12 @@ void main() {
   });
 
   test('generate abi file from contract', () async {
-    TestWidgetsFlutterBinding.ensureInitialized();
-    final builder = SolcBuilder();
-    final object = await builder.buildSolcObject();
-    Contract contract = Contract.fromObject(object);
+    // TestWidgetsFlutterBinding.ensureInitialized();
+    // final builder = SolcBuilder();
+    // final object = await builder.buildSolcObject();
+    // Contract contract = Contract.fromObject(object);
 
-    await builder.generateAbiFileFromContract(contract);
+    // await builder.generateAbiFileFromContract(contract);
   });
 
   test('test3', () {

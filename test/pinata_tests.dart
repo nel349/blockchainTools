@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:smart_contract/pinata/metadata.dart';
 import 'package:smart_contract/pinata/pinata.dart';
+import 'package:smart_contract/utils.dart';
 
 void main() {
 
@@ -24,8 +26,14 @@ void main() {
     expect(result?.data['IpfsHash'], isNotEmpty);
   });
 
-  test('dio test', () async {
+  test('generate metadata', () async {
+      Metadata metadata = Metadata()
+          ..name = "testName"
+          ..image = "testImage"
+          ..externalUrl = "testExternalImage"
+          ..description = "testDescription";
 
+      Utils.writeFile('test_resources/nftResources/metadata.json', metadata.toJson());
   });
 
   test('generate abi file from contract', () async {
