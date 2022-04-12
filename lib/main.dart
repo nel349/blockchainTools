@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'views/imagePickerHome.dart';
 import 'views/webview_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(PickerHomeApp());
 }
 
 class MyApp extends StatelessWidget {
