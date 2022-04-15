@@ -21,6 +21,19 @@ dependencies:
   dio: ^4.0.6
   image_picker: ^0.7.2+1
 
+  # added for UI
+  scrollable_positioned_list: ^0.2.3
+  carousel_slider: ^4.0.0
+  url_launcher: ^6.0.0-nullsafety.6
+  font_awesome_flutter: ^10.1.0
+  sliding_up_panel: ^2.0.0+1
+  responsive_sizer: ^3.0.5+1
+  animated_text_kit: ^4.2.1
+  flutter_form_builder: ^7.1.1
+  getwidget: ^2.0.5
+  onboarding: ^3.1.0
+  lottie: ^1.2.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -35,3 +48,4 @@ flutter:
     - contracts/Investment.sol
     - test_resources/
     - test_resources/nftResources/
+    - assets/imgs/

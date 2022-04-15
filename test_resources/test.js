@@ -1,4 +1,5 @@
-var exampleSource = "pragma solidity ^0.7.1; contract Investment {constructor() {}}";
+// var exampleSource = "pragma solidity ^0.8.13;contract Investment{event CheckBalance(address indexed from, uint256 amount); uint256 balanceAmount; uint256 depositAmount; uint256 thresholdAmount; uint256 returnOnInvestment; constructor(){balanceAmount=getBalanceAmount(); depositAmount=0; thresholdAmount=12; returnOnInvestment=3; emit CheckBalance(msg.sender, balanceAmount);}function getBalanceAmount() public view returns (uint256){return msg.sender.balance / (1e16);}function getDepositAmount() public view returns (uint256){return depositAmount;}function addDepositAmount(uint256 amount) public{depositAmount=depositAmount + amount; if (depositAmount >=thresholdAmount){balanceAmount=depositAmount + returnOnInvestment;}}function withdrawBalance() public{balanceAmount=0; depositAmount=0;}}"; // good
+var exampleSource = "pragma solidity ^0.8.13;contract Investment {event CheckBalance(address indexed from, uint256 amount);uint256 balanceAmount;uint256 depositAmount;uint256 thresholdAmount;uint256 returnOnInvestment;constructor() {balanceAmount = getBalanceAmount();depositAmount = 0;thresholdAmount = 12;returnOnInvestment = 3;emit CheckBalance(msg.sender, balanceAmount);}function getBalanceAmount() public view returns (uint256) {return msg.sender.balance / (1e16);}function getDepositAmount() public view returns (uint256) {return depositAmount;}function addDepositAmount(uint256 amount) public {depositAmount = depositAmount + amount;if (depositAmount >= thresholdAmount) {balanceAmount = depositAmount + returnOnInvestment;}}function withdrawBalance() public {balanceAmount = 0;depositAmount = 0;} }" //testing
 var optimize = 1;
 var compiler;
 var sourceCode="";
@@ -39,11 +40,17 @@ function solcCompile(compiler) {
     return stringResult;
 }
 
+function solcCompileOptimized(compiler) {
+    var result = compiler.compile(solcInput, optimize);
+    return JSON.stringify(result);
+}
+
 function loadSolcVersion() {
     status("Loading Solc: " + getVersion());
     BrowserSolc.loadVersion(getVersion(), function(c) {
         compiler = c;
         console.log("Solc Version Loaded: " + getVersion());
+        console.log("compiler : " + compiler);
         status("Solc loaded.  Compiling...");
         solcCompile(compiler);
     });
@@ -63,7 +70,7 @@ window.onload = function() {
     BrowserSolc.getVersions(function(soljsonSources, soljsonReleases) {
         populateVersions(soljsonSources);
 
-        document.getElementById("versions").value = soljsonReleases["0.7.1"];
+        document.getElementById("versions").value = soljsonReleases["0.8.13"];
 
         loadSolcVersion();
     });
@@ -72,24 +79,29 @@ window.onload = function() {
 function setupCompiler(){
     var outerThis = this;
     setTimeout(function(){
-      window.BrowserSolc.getVersions(function(soljsonSources, soljsonReleases) {
-        var compilerVersion = soljsonReleases[_.keys(soljsonReleases)[0]];
+      window.BrowserSolc.getVersions(function(_, soljsonReleases) {
+        var compilerVersion = soljsonReleases["0.8.13"];
         console.log("Browser-solc compiler version : " + compilerVersion);
         window.BrowserSolc.loadVersion(compilerVersion, function(c) {
           compiler = c;
-          outerThis.setState({statusMessage:"ready!"},function(){
-            console.log("Solc Version Loaded: " + compilerVersion);
-          });
+          console.log("compiler : " + compiler);
         });
       });
     },1000);
-  }
+}
+
+function setupCompilerOptimized() {
+    BrowserSolc.loadVersion(getVersion(), function(c) {
+        compiler = c;
+    });
+}
+
 
 var solcInput = {
     language: "Solidity",
     sources: { 
         contract: {
-            content: sourceCode
+            content: exampleSource
         }
      },
     settings: {

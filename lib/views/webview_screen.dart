@@ -195,11 +195,10 @@ class SampleMenu extends StatelessWidget {
 
   Future<void> _onCompileSolc(WebViewController controller,
       BuildContext context)  async {
-    // final contractText = await SolcBuilder.getContractSol("test_resources/Investment.sol");
     final jsonStr = await SolcBuilder.constructStandartSolcJsonString();
-    await controller.runJavascript('setupCompiler()');
-    final result = await controller.runJavascriptReturningResult('solcInput=JSON.stringify($jsonStr);'
-        'solcCompile(compiler)');
+    final solcInput = await controller.runJavascriptReturningResult('solcInput=JSON.stringify($jsonStr);');
+    print("Input solc: $solcInput");
+    final result = await controller.runJavascriptReturningResult('solcCompileOptimized(compiler);');
     final resultJson = await json.decode(result);
     final abi = resultJson["contracts"]["Investment.sol"]["Investment"]["abi"];
     final bytecode = resultJson["contracts"]["Investment.sol"]["Investment"]["evm"]["bytecode"]["object"];
@@ -207,17 +206,9 @@ class SampleMenu extends StatelessWidget {
     print("Compilation abi: $abi");
     print("Compilation bytecode: $bytecode");
     final abiStr = json.encode(abi);
+
     // Deploy contract
     await controller.runJavascript('abi=JSON.stringify($abiStr);' 'bytecode="$bytecode"');
-
-    var b = await controller.runJavascriptReturningResult('bytecode');
-    var a = await controller.runJavascriptReturningResult('abi');
-    // var c = await controller.runJavascriptReturningResult('payload');
-    // await controller.runJavascript("initDeployment");
-
-    b = await controller.runJavascriptReturningResult('bytecode');
-    a = await controller.runJavascriptReturningResult('abi');
-    // c = await controller.runJavascriptReturningResult('payload');
     await controller.runJavascript('deployContract()');
     final contractStream = DeployContractStream();
     contractStream.checkJavascriptResult(controller)
