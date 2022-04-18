@@ -23,9 +23,9 @@ class SolcBuilder {
   }
 
   static Future<String> constructStandartSolcJsonString() async {
-    final contractText = await getContractSol("test_resources/Investment.sol");
-    var jsonSolcStr ='{"language": "Solidity","sources": {"Investment.sol": {"content": "$contractText"}},"settings": {"outputSelection": {"*": {"*": ["abi","evm.bytecode"]}}}}';
-    return jsonSolcStr.replaceAll("\n","").replaceAll(RegExp(r'\s{2,}'), "");
+    final contractText = await getContractSol("contracts/nfts/myNftTokenCondensed.sol");
+    var jsonSolcStr ='{"language": "Solidity","sources": {"myNftTokenCondensed.sol": {"content": "$contractText"}},"settings": {"outputSelection": {"*": {"*": ["abi","evm.bytecode"]}}}}';
+    return jsonSolcStr.replaceAll("\n","").replaceAll(RegExp(r'\s{2,}'), " ");
   }
 
   Future<void> generateAbiFileFromContract(Contract contract) async {

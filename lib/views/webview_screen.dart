@@ -200,8 +200,8 @@ class SampleMenu extends StatelessWidget {
     print("Input solc: $solcInput");
     final result = await controller.runJavascriptReturningResult('solcCompileOptimized(compiler);');
     final resultJson = await json.decode(result);
-    final abi = resultJson["contracts"]["Investment.sol"]["Investment"]["abi"];
-    final bytecode = resultJson["contracts"]["Investment.sol"]["Investment"]["evm"]["bytecode"]["object"];
+    final abi = resultJson["contracts"]["myNftTokenCondensed.sol"]["MyNftTokenCondensed"]["abi"];
+    final bytecode = resultJson["contracts"]["myNftTokenCondensed.sol"]["MyNftTokenCondensed"]["evm"]["bytecode"]["object"];
     print("Compilation Result: $resultJson");
     print("Compilation abi: $abi");
     print("Compilation bytecode: $bytecode");

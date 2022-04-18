@@ -18,7 +18,7 @@ let account = '0x33d312c90831F42840E412DC2094a61a99d5Cb57';
 
 let parameter = {
     from: account,
-    gas: web3_instance.utils.toHex(800000),
+    gas: web3_instance.utils.toHex(5511498),
     gasPrice: web3_instance.utils.toHex(web3_instance.utils.toWei('35', 'gwei'))
 }
 

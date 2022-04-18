@@ -48,3 +48,5 @@ app.*.map.json
 /test_resources/r.js
 /test_resources/browser-solc.js
 test_resources/test-ledger
+/src/abis/
+/contracts/@openzeppelin/contracts/

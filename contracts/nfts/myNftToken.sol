@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
-
-pragma solidity >=0.8.9 <0.9.0;
+//  Creators: ChiruLabs and Openzepplin
+pragma solidity ^0.8.0;
 
 import '../@openzeppelin/contracts/access/Ownable.sol';
 import '../@openzeppelin/contracts/utils/cryptography/MerkleProof.sol';
