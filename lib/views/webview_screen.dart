@@ -5,13 +5,11 @@
 // ignore_for_file: public_member_api_docs
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../services/builder_solc.dart';
-import '../services/deploy_contract_stream.dart';
 
 void main() => runApp(MaterialApp(home: WebViewExample()));
 
@@ -195,25 +193,8 @@ class SampleMenu extends StatelessWidget {
 
   Future<void> _onCompileSolc(WebViewController controller,
       BuildContext context)  async {
-    final jsonStr = await SolcBuilder.constructStandartSolcJsonString();
-    final solcInput = await controller.runJavascriptReturningResult('solcInput=JSON.stringify($jsonStr);');
-    print("Input solc: $solcInput");
-    final result = await controller.runJavascriptReturningResult('solcCompileOptimized(compiler);');
-    final resultJson = await json.decode(result);
-    final abi = resultJson["contracts"]["myNftTokenCondensed.sol"]["MyNftTokenCondensed"]["abi"];
-    final bytecode = resultJson["contracts"]["myNftTokenCondensed.sol"]["MyNftTokenCondensed"]["evm"]["bytecode"]["object"];
-    print("Compilation Result: $resultJson");
-    print("Compilation abi: $abi");
-    print("Compilation bytecode: $bytecode");
-    final abiStr = json.encode(abi);
-
-    // Deploy contract
-    await controller.runJavascript('abi=JSON.stringify($abiStr);' 'bytecode="$bytecode"');
-    await controller.runJavascript('deployContract()');
-    final contractStream = DeployContractStream();
-    contractStream.checkJavascriptResult(controller)
-        .firstWhere((element) => element.startsWith('0x'))
-        .then((value) => print("Transaction Hash: $value"));
+    final standardJsonString = await SolcBuilder.constructStandartSolcJsonString();
+    await SolcBuilder.compile(controller, standardJsonString);
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Column(
