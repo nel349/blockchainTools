@@ -1,6 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:smart_contract/pinata/metadata.dart';
 import 'package:smart_contract/pinata/pinata.dart';
 
 class PickerHomeApp extends StatelessWidget {
@@ -40,8 +42,36 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _uploadImageToPinata() async {
+
+    final pinata = Pinata();
+
+    Response<dynamic>? response;
     if (_image != null){
-      await Pinata().pinFileToIPFS(_image!, {});
+      // upload image
+      response = await pinata.pinFileToIPFS(file: _image!);
+    }
+    if (response != null  && response.statusCode == 200) {
+      String? fileName = _image?.path.split('/').last;
+      final pinataOptions = PinataOptions();
+      final pinataMetadata = PinataMetadata()
+      ..name = "${(fileName as String).replaceFirst(".jpg", "_")}Metadata";
+
+      String imageCid = response.data["IpfsHash"];
+
+      Metadata metadata = Metadata()
+        ..name = "NFT Name"
+        ..image = "https://gateway.pinata.cloud/ipfs/$imageCid"
+        ..externalUrl = "NFTExternalImage"
+        ..description = "nftDescription";
+
+      final jsonBody = {
+        "pinataOptions" : pinataOptions.toJson(),
+        "pinataMetadata" : pinataMetadata.toJson(),
+        "pinataContent" : metadata
+      };
+
+      // upload metadata
+      await pinata.pinJSONToIPFS(jsonBody);
     }
   }
 
@@ -50,7 +80,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Kindacode.com'),
+          title: const Text('Upload NFT Image'),
         ),
         body: SafeArea(
           child: Padding(

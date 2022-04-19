@@ -6,6 +6,7 @@ const keyImage = 'image';
 const keyName = 'name';
 const keyAttributes = 'attributes';
 
+/// https://docs.pinata.cloud/api-pinning/pin-json
 class Metadata {
 
   String? description;
@@ -44,5 +45,29 @@ class Metadata {
     });
     json += ']';
     return json;
+  }
+}
+
+class PinataOptions {
+  String? cidVersion;
+  String? customPinPolicy;
+
+  Map<String, dynamic> toJson() {
+    return {
+      "cidVersion": cidVersion,
+      "customPinPolicy": customPinPolicy,
+    };
+  }
+}
+
+class PinataMetadata {
+  String? name;
+  String? keyvalues;
+
+  Map<String, dynamic> toJson() {
+    return {
+      "name": name,
+      "keyvalues": keyvalues,
+    };
   }
 }
