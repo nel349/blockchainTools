@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:smart_contract/pinata/pinata.dart';
 
 class PickerHomeApp extends StatelessWidget {
   const PickerHomeApp({Key? key}) : super(key: key);
@@ -38,6 +39,13 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _uploadImageToPinata() async {
+    if (_image != null){
+      await Pinata().pinFileToIPFS(_image!, {});
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +71,14 @@ class _HomePageState extends State<HomePage> {
                 child: _image != null
                     ? Image.file(_image!, fit: BoxFit.cover)
                     : const Text('Please select an image'),
-              )
+              ),
+              const SizedBox(height: 35),
+              Center(
+                child: ElevatedButton(
+                  child: const Text('Upload to Pinata'),
+                  onPressed: _uploadImageToPinata,
+                ),
+              ),
             ]),
           ),
         ));

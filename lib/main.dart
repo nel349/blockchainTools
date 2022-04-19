@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         title: 'Smart Contract',
         debugShowCheckedModeBanner: false,
         // theme: ThemeData(fontFamily: 'Montserrat'),
-        initialRoute: "/webview",
+        initialRoute: "/image_picker",
         routes: <String, WidgetBuilder>{
           '/home': (BuildContext context) => new Home(),
           '/settings': (BuildContext context) => new Settings(),
@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
           "/start": (BuildContext context) => new Started(),
           "/services": (BuildContext context) => new Services(),
           "/webview": (BuildContext context) => new WebViewExample(),
+          "/image_picker": (BuildContext context) => new PickerHomeApp(),
         });
   }
 }

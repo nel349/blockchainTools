@@ -13,14 +13,7 @@ void main() {
     dynamic options = {"sdfs": "sdfsdf"};
 
     File file = File("test_resources/nftResources/nft3.jpeg");
-    String fileName = file.path.split('/').last;
-    final bytes = await file.readAsBytes();
-    final result = await Pinata().pinFileToIPFS(
-        PINATA_API_KEY,
-        PINATA_SECRET_API_KEY,
-        bytes,
-        fileName,
-        options);
+    final result = await Pinata().pinFileToIPFS(file, options);
 
     expect(result?.data, isNotNull);
     expect(result?.data['IpfsHash'], isNotEmpty);

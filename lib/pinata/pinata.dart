@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
+
+const PINATA_API_KEY = '167c76e59775e6b354d9';
+const PINATA_SECRET_API_KEY = 'ee3cf789c187d15db5ad9fee72ccadd86bc45a2d2d2df36b4d5610faacb68133';
 
 class Pinata {
   static String endpoint = 'https://api.pinata.cloud/pinning/pinFileToIPFS';
@@ -10,21 +15,31 @@ class Pinata {
     dio = Dio();
   }
 
-  Future<Response<dynamic>?> pinFileToIPFS(String pinataApiKey, String pinataSecretApiKey,
+  Future<Response<dynamic>?> pinFileToIPFS(File file, dynamic options) async {
+    String fileName = file.path.split('/').last;
+    final bytes = await file.readAsBytes();
+    final response = await _pinFileToIPFS(PINATA_API_KEY, PINATA_SECRET_API_KEY, bytes, fileName, options);
+    if (response?.statusCode != 200) {
+      throw DioError(requestOptions: options);
+    }
+    return response;
+  }
+
+  Future<Response<dynamic>?> _pinFileToIPFS(String pinataApiKey, String pinataSecretApiKey,
       Uint8List bytes, String fileName,  dynamic options) async {
 
     FormData formData = FormData.fromMap({
       "file": MultipartFile.fromBytes(bytes, filename:fileName),
     });
 
-    // if (options != null) {
-    //   if (options['pinataMetadata'] != null ) {
-    //     formData.fields.add(MapEntry("pinataMetadata", jsonEncode(options['pinataMetadata'])));
-    //   }
-    //   if (options['pinataOptions'] != null ) {
-    //     formData.fields.add(MapEntry("pinataOptions", jsonEncode(options['pinataOptions'])));
-    //   }
-    // }
+    if (options != null) {
+      if (options['pinataMetadata'] != null ) {
+        formData.fields.add(MapEntry("pinataMetadata", jsonEncode(options['pinataMetadata'])));
+      }
+      // if (options['pinataOptions'] != null ) {
+      //   formData.fields.add(MapEntry("pinataOptions", jsonEncode(options['pinataOptions'])));
+      // }
+    }
 
     Response? response;
     await dio?.post(
@@ -43,12 +58,7 @@ class Pinata {
         },
           contentType: 'multipart/form-data; boundary=${formData.boundary}'
       ),
-    ).then((value) {
-      response = value;
-      if (response?.statusCode != 200) {
-        throw DioError(requestOptions: options);
-      }
-    }).catchError((e){
+    ).catchError((e){
       print('Got error: $e');
     });
 
