@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_contract/pinata/metadata.dart';
 import 'package:smart_contract/pinata/pinata.dart';
+import 'package:smart_contract/views/webview_screen.dart';
 
 class PickerHomeApp extends StatelessWidget {
   const PickerHomeApp({Key? key}) : super(key: key);
@@ -109,6 +110,18 @@ class _HomePageState extends State<HomePage> {
                   onPressed: _uploadImageToPinata,
                 ),
               ),
+              const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  child: const Text('Go to Smart Contract Deployment'),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (_) => WebViewExample())
+                    );
+                  },
+                ),
+              )
             ]),
           ),
         ));

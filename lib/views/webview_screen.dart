@@ -11,7 +11,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../services/builder_solc.dart';
 
-void main() => runApp(MaterialApp(home: WebViewExample()));
+void main() async {
+runApp(MaterialApp(home: WebViewExample()));
+}
 
 const String kLocalExamplePage = '''
 <!DOCTYPE html>

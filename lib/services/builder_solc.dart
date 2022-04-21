@@ -21,21 +21,32 @@ class SolcBuilder {
   }
 
   static Future<void> compile(WebViewController controller, String jsonStr) async {
-    final solcInput = await controller.runJavascriptReturningResult('solcInput=JSON.stringify($jsonStr);');
+    final contractStream = DeployContractStream();
+    final solcInput = await controller.runJavascriptReturningResult('solcInput=$jsonStr');
     print("Input solc: $solcInput");
-    final result = await controller.runJavascriptReturningResult('solcCompileOptimized(compiler);');
-    final resultJson = await json.decode(result);
+
+    final a = await controller.runJavascriptReturningResult('solcInput');
+    var compiledContractResult;
+    compiledContractResult = await controller.runJavascriptReturningResult('startCompilation();');
+    // contractStream.checkAbiResult(controller)
+    //     .firstWhere((element) => element.startsWith('{'))
+    //     .then((value) {
+    //       print("compiled contract: $value");
+    //       compiledContractResult = value;
+    //     });
+
+    final resultJson = await json.decode(compiledContractResult);
     final abi = resultJson["contracts"]["myNftTokenCondensed.sol"]["MyNftTokenCondensed"]["abi"];
     final bytecode = resultJson["contracts"]["myNftTokenCondensed.sol"]["MyNftTokenCondensed"]["evm"]["bytecode"]["object"];
-    print("Compilation Result: $resultJson");
-    print("Compilation abi: $abi");
-    print("Compilation bytecode: $bytecode");
+    // print("Compilation Result: $resultJson");
+    // print("Compilation abi: $abi");
+    // print("Compilation bytecode: $bytecode");
     final abiStr = json.encode(abi);
 
     // Deploy contract
     await controller.runJavascript('abi=JSON.stringify($abiStr);' 'bytecode="$bytecode"');
     await controller.runJavascript('deployContract()');
-    final contractStream = DeployContractStream();
+
     contractStream.checkJavascriptResult(controller)
         .firstWhere((element) => element.startsWith('0x'))
         .then((value) => print("Transaction Hash: $value"));
@@ -52,6 +63,16 @@ class SolcBuilder {
   static Future<String> getContractSol(String filename) async {
     final str = await rootBundle.loadString(filename);
     return str.replaceAll("\n"," ");
+  }
+
+  static Future<bool> writeAbiFile(String fileName, dynamic object) async {
+    try {
+      File myFile = File('lib/$fileName.abi.json');
+      await myFile.writeAsString(jsonEncode(object));
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
 }
