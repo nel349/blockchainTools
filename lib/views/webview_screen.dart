@@ -195,8 +195,8 @@ class SampleMenu extends StatelessWidget {
 
   Future<void> _onCompileSolc(WebViewController controller,
       BuildContext context)  async {
-    final standardJsonString = await SolcBuilder.constructStandartSolcJsonString();
-    await SolcBuilder.compile(controller, standardJsonString);
+    final contractSourceCode = await SolcBuilder.getContractSourceCode();
+    await SolcBuilder.compile(controller, contractSourceCode);
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Column(

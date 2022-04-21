@@ -20,24 +20,35 @@ class SolcBuilder {
     return jsonSolcStr.replaceAll("\n","").replaceAll(RegExp(r'\s{2,}'), " ");
   }
 
+  static Future<String> getContractSourceCode() async {
+    final contractText = await getContractSol("contracts/nfts/myNftTokenCondensed.sol");
+    return contractText.replaceAll("\n","").replaceAll(RegExp(r'\s{2,}'), " ");
+  }
+
   static Future<void> compile(WebViewController controller, String jsonStr) async {
     final contractStream = DeployContractStream();
-    final solcInput = await controller.runJavascriptReturningResult('solcInput=$jsonStr');
-    print("Input solc: $solcInput");
+    final contractCode = await controller.runJavascriptReturningResult('sourceCode=\"$jsonStr\"');
+    print("Contract code: $contractCode");
 
-    final a = await controller.runJavascriptReturningResult('solcInput');
-    var compiledContractResult;
-    compiledContractResult = await controller.runJavascriptReturningResult('startCompilation();');
-    // contractStream.checkAbiResult(controller)
-    //     .firstWhere((element) => element.startsWith('{'))
-    //     .then((value) {
-    //       print("compiled contract: $value");
-    //       compiledContractResult = value;
-    //     });
+    final a = await controller.runJavascriptReturningResult('sourceCode;');
+    print("Contract code a:  $a");
+
+    String compiledContractResult = "";
+    await controller.runJavascriptReturningResult('loadSolJson()');
+    // var compiledCode = await controller.runJavascriptReturningResult('getCompiledCode()');
+    await contractStream.checkAbiResult(controller)
+        .firstWhere((element) => element.contains('contracts'))
+        .then((value) {
+          print("compiled contract: $value");
+          compiledContractResult = value;
+
+          //SHOW SOME LOADING STATE
+        });
 
     final resultJson = await json.decode(compiledContractResult);
-    final abi = resultJson["contracts"]["myNftTokenCondensed.sol"]["MyNftTokenCondensed"]["abi"];
-    final bytecode = resultJson["contracts"]["myNftTokenCondensed.sol"]["MyNftTokenCondensed"]["evm"]["bytecode"]["object"];
+    final resultB = await json.decode(resultJson);
+    final abi = resultB["contracts"]["contract"]["MyNftTokenCondensed"]["abi"];
+    final bytecode = resultB["contracts"]["contract"]["MyNftTokenCondensed"]["evm"]["bytecode"]["object"];
     // print("Compilation Result: $resultJson");
     // print("Compilation abi: $abi");
     // print("Compilation bytecode: $bytecode");

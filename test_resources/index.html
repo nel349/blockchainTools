@@ -4,7 +4,7 @@
         <title>Test Page</title>
         <script id="testscript" type="text/javascript">
             var compiledCode="";
-            var solcInput="";
+            var sourceCode="";
 
             function workerCros(url) {
                 const iss = "importScripts('" + url + "');";
@@ -18,13 +18,17 @@
                         w = new Worker(workerUrl);
                         // var exampleSource = "pragma solidity ^0.8.13;contract Investment {event CheckBalance(address indexed from, uint256 amount);uint256 balanceAmount;uint256 depositAmount;uint256 thresholdAmount;uint256 returnOnInvestment;constructor() {balanceAmount = getBalanceAmount();depositAmount = 0;thresholdAmount = 12;returnOnInvestment = 3;emit CheckBalance(msg.sender, balanceAmount);}function getBalanceAmount() public view returns (uint256) {return msg.sender.balance / (1e16);}function getDepositAmount() public view returns (uint256) {return depositAmount;}function addDepositAmount(uint256 amount) public {depositAmount = depositAmount + amount;if (depositAmount >= thresholdAmount) {balanceAmount = depositAmount + returnOnInvestment;}}function withdrawBalance() public {balanceAmount = 0;depositAmount = 0;} }" //testing
 
-                        w.postMessage(solcInput);
+                        w.postMessage(sourceCode);
                     }
                     w.onmessage = function(event) {
                         compiledCode = event.data;
                         document.getElementById("compile-output").value = compiledCode;
                     };
                 }
+            }
+
+            function getCompiledCode() {
+                return compiledCode;
             }
 
         </script>
