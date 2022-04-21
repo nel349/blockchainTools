@@ -1,5 +1,5 @@
 importScripts("https://binaries.soliditylang.org/bin/soljson-v0.8.13+commit.abaa5c0e.js");
-importScripts("http://127.0.0.1:5500/browser-solc.new.min.js");
+importScripts("https://cdn.jsdelivr.net/gh/nel349/raffle_demo/test_resources/browser-solc.new.min.js");
 
 var solcJsonStandard='';
 
