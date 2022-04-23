@@ -1,10 +1,11 @@
 const HDWalletProvider = require("hdwallet-provider");
 
 const rpcURL = 'https://ropsten.infura.io/v3/a2293dab520a45fba5a5ab184d14e8ab'; // ethereum
+const rpcURLRinkeby = 'https://rinkeby.infura.io/v3/a2293dab520a45fba5a5ab184d14e8ab';
 const rpcMumbai = 'https://polygon-mumbai.g.alchemy.com/v2/wDKjb83mAC3ok5MgMg1vWvc78NAa59zo'; // Polygon
 
 //load single private key as string
-var provider = new HDWalletProvider("afd01d2beeb0db02600fcfee2a85805e6b59a32d6bc89cfa91ef55926e289c3b", rpcMumbai);
+var provider = new HDWalletProvider("12ba688b588f2096b1af28d16cff4037bbc735a38f8c975a6b9a4582dc16fdff", rpcURLRinkeby);
 
 
 const web3_instance = new Web3(provider);
@@ -17,12 +18,13 @@ let privatKey = '';
 
 var deploy_contract = new web3_instance.eth.Contract(JSON.parse(abi));
 
-let account = '0x33d312c90831F42840E412DC2094a61a99d5Cb57'; 
+let account = '0xc3511d52D2e03B5edDE1e1F55F1c22fd5f5369D9'; 
 
 const gasCost = '40';
+const gasLimit = 5511498;
 let parameter = {
     from: account,
-    gas: web3_instance.utils.toHex(5511498),
+    gas: web3_instance.utils.toHex(gasLimit),
     gasPrice: web3_instance.utils.toHex(web3_instance.utils.toWei(gasCost, 'gwei'))
 }
 
@@ -33,11 +35,22 @@ function deployContract() {
 
     deploy_contract.deploy(payload).send(parameter, (_, transactionHash) => {
         console.log('Transaction Hash :', transactionHash);
-        console.log('Gas Cost :', gasCost);
+        // console.log('Gas Cost :', gasCost);
+        // estimateGasFor(bytecode);
         transactionHashResult = transactionHash;
-    }).on('confirmation', () => {}).then((newContractInstance) => {
+    })
+    .on('transactionHash', (transactionHashResult) =>{
+        console.log('Transaction HASH ', transactionHashResult);
+    })
+    .on('confirmation', () => {}).then((newContractInstance) => {
         console.log('Deployed Contract Address : ', newContractInstance.options.address);
     });
+}
+
+function estimateGasFor(bytecode){
+    web3_instance.eth.estimateGas({
+        to: "0x0000000000000000000000000000000000000000",
+        data: bytecode}).then(value => {console.log('Estimated gas: ', value);});
 }
 
 function getTransactionHashResult() {
