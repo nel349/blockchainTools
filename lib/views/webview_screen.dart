@@ -218,7 +218,7 @@ class SampleMenu extends StatelessWidget {
 
   Future<void> _onLoadFlutterAssetExample(
       WebViewController controller, BuildContext context) async {
-    await controller.loadFlutterAsset('test_resources/index.html');
+    await controller.loadFlutterAsset('contract_resources/index.html');
   }
 
   Future<void> _onLoadHtmlStringExample(

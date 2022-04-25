@@ -46,9 +46,9 @@ class SolcBuilder {
         });
 
     final resultJson = await json.decode(compiledContractResult);
-    final resultB = await json.decode(resultJson);
-    final abi = resultB["contracts"]["contract"]["MyNftTokenCondensed"]["abi"];
-    final bytecode = resultB["contracts"]["contract"]["MyNftTokenCondensed"]["evm"]["bytecode"]["object"];
+    // final resultB = await json.decode(resultJson);
+    final abi = resultJson["contracts"]["contract"]["MyNftTokenCondensed"]["abi"];
+    final bytecode = resultJson["contracts"]["contract"]["MyNftTokenCondensed"]["evm"]["bytecode"]["object"];
     // print("Compilation Result: $resultJson");
     // print("Compilation abi: $abi");
     // print("Compilation bytecode: $bytecode");

@@ -47,6 +47,6 @@ flutter:
     - src/abis/Investment.json
     - contracts/nfts/
     - contracts/Investment.sol
-    - test_resources/
-    - test_resources/nftResources/
+    - contract_resources/
+    - contract_resources/nftResources/
     - assets/imgs/

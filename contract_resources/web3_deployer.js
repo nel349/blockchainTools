@@ -5,7 +5,7 @@ const rpcURLRinkeby = 'https://rinkeby.infura.io/v3/a2293dab520a45fba5a5ab184d14
 const rpcMumbai = 'https://polygon-mumbai.g.alchemy.com/v2/wDKjb83mAC3ok5MgMg1vWvc78NAa59zo'; // Polygon
 
 //load single private key as string
-var provider = new HDWalletProvider("12ba688b588f2096b1af28d16cff4037bbc735a38f8c975a6b9a4582dc16fdff", rpcURLRinkeby);
+var provider = new HDWalletProvider("12ba688b588f2096b1af28d16cff4037bbc735a38f8c975a6b9a4582dc16fdff", rpcMumbai);
 
 
 const web3_instance = new Web3(provider);

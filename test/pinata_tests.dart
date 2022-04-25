@@ -9,7 +9,7 @@ void main() {
   test('pin to file', () async {
     dynamic options = {"sdfs": "sdfsdf"};
 
-    File file = File("test_resources/nftResources/nft3.jpeg");
+    File file = File("contract_resources/nftResources/nft3.jpeg");
     final actual = await Pinata().pinFileToIPFS(file: file, options: options);
 
     expect(actual?.data, isNotNull);
@@ -23,7 +23,7 @@ void main() {
           ..externalUrl = "testExternalImage"
           ..description = "testDescription";
 
-      Utils.writeFile('test_resources/nftResources/metadata.json', metadata.toJson());
+      Utils.writeFile('contract_resources/nftResources/metadata.json', metadata.toJson());
   });
 
   test('upload metadata to Pinata', () async {

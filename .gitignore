@@ -39,14 +39,14 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
-/test_resources/node_modules/
-/test_resources/.eslintrc.js
-/test_resources/package.json
-/test_resources/package-lock.json
-/test_resources/require.cjs
-/test_resources/web3.min.js
-/test_resources/r.js
-/test_resources/browser-solc.js
-test_resources/test-ledger
+/contract_resources/node_modules/
+/contract_resources/.eslintrc.js
+/contract_resources/package.json
+/contract_resources/package-lock.json
+/contract_resources/require.cjs
+/contract_resources/web3.min.js
+/contract_resources/r.js
+/contract_resources/browser-solc.js
+contract_resources/test-ledger
 /src/abis/
 /contracts/@openzeppelin/contracts/
