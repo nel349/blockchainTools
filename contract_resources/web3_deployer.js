@@ -5,7 +5,7 @@ const rpcURLRinkeby = 'https://rinkeby.infura.io/v3/a2293dab520a45fba5a5ab184d14
 const rpcMumbai = 'https://polygon-mumbai.g.alchemy.com/v2/wDKjb83mAC3ok5MgMg1vWvc78NAa59zo'; // Polygon
 
 //load single private key as string
-var provider = new HDWalletProvider("12ba688b588f2096b1af28d16cff4037bbc735a38f8c975a6b9a4582dc16fdff", rpcMumbai);
+var provider = new HDWalletProvider("c07dc9fe23081f4f06d1c1f8211f2627be0b178c47bddd3ad06177fffe3c5d5f", rpcMumbai);
 
 
 const web3_instance = new Web3(provider);
@@ -18,14 +18,12 @@ let privatKey = '';
 
 var deploy_contract = new web3_instance.eth.Contract(JSON.parse(abi));
 
-let account = '0xc3511d52D2e03B5edDE1e1F55F1c22fd5f5369D9'; 
+let account = '0x0b6cd4c4bD7339859F242eDb7830935aB4e5dc11'; 
 
 const gasCost = '40';
 const gasLimit = 5511498;
 let parameter = {
-    from: account,
-    gas: web3_instance.utils.toHex(gasLimit),
-    gasPrice: web3_instance.utils.toHex(web3_instance.utils.toWei(gasCost, 'gwei'))
+    from: account
 }
 
 function deployContract() {

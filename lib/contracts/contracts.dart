@@ -11,9 +11,9 @@ const rpcMumbai = 'https://polygon-mumbai.g.alchemy.com/v2/wDKjb83mAC3ok5MgMg1vW
 const String wsUrlMumbai = 'wss://polygon-mumbai.g.alchemy.com/v2/wDKjb83mAC3ok5MgMg1vWvc78NAa59zo';
 
 const String privateKey =
-    '12ba688b588f2096b1af28d16cff4037bbc735a38f8c975a6b9a4582dc16fdff';
+    'c07dc9fe23081f4f06d1c1f8211f2627be0b178c47bddd3ad06177fffe3c5d5f';
 final EthereumAddress contractAddr =
-EthereumAddress.fromHex('0x9aE9F996C208B4224148bA4E1782c8A3d43a0e28');
+EthereumAddress.fromHex('0xa0d9E9a55008D2B4B13cBBd4C78c51a85A482077');
 
 // final EthereumAddress receiver = EthereumAddress.fromHex('0x6c87E1a114C3379BEc929f6356c5263d62542C13');
 
@@ -30,11 +30,6 @@ class NftContract {
 
     // read the contract abi and tell web3dart where it's deployed (contractAddr)
     final nftContract = Nft(address: contractAddr, client: client);
-
-    // listen for the Transfer event when it's emitted by the contract above
-    final subscription = nftContract.transferEvents().take(1).listen((event) {
-      print('${event.from} sent ${event.tokenId} MetaCoins to ${event.to}!');
-    });
 
     // check the number of NFT tokens by calling the appropriate function
     final ownedTokens = await nftContract.walletOfOwner(ownAddress);
@@ -56,18 +51,13 @@ class NftContract {
     if (mintTransactionData.isNotEmpty) {
 
       print('Minting hash: $mintTransactionData');
-      nftContract.setHiddenMetadataUri(
+
+      final setUrlTransactionHash = nftContract.setHiddenMetadataUri(
           "https://gateway.pinata.cloud/ipfs/$cid",
           credentials: credentials);
-    }
 
-    // // send all our MetaCoins to the other address by calling the sendCoin
-    // // function
-    // await token.sendCoin(receiver, balance, credentials: credentials);
-    //
-    await subscription.asFuture();
-    await subscription.cancel();
-    //
+      print('setUrl hash: $setUrlTransactionHash');
+    }
     await client.dispose();
   }
 }
