@@ -540,8 +540,8 @@ contract MyNftTokenCondensed is ERC721A, Ownable, ReentrancyGuard {
     constructor() ERC721A('NFTToken', 'NFT') {
         setCost(0.1 ether);
         maxSupply = 10;
+        paused = false;
         setMaxMintAmountPerTx(2);
-        setHiddenMetadataUri('https://ipfs.io/ipfs/QmdAvxK5GbAzJdsscfdxsANXK5t7xgdb8CMwWdTxtAncF2/1.json');
     }
 
     modifier mintCompliance(uint256 _mintAmount) {

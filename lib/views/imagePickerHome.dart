@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:smart_contract/contracts/contracts.dart';
 import 'package:smart_contract/pinata/metadata.dart';
 import 'package:smart_contract/pinata/pinata.dart';
 import 'package:smart_contract/views/webview_screen.dart';
@@ -29,6 +30,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   File? _image;
+  String cidImage = "";
+  String cidImageMetadata = "";
 
   final _picker = ImagePicker();
   // Implementing the image picker
@@ -58,6 +61,7 @@ class _HomePageState extends State<HomePage> {
       ..name = "${(fileName as String).replaceFirst(".jpg", "_")}Metadata";
 
       String imageCid = response.data["IpfsHash"];
+      cidImage = imageCid ?? "";
 
       Metadata metadata = Metadata()
         ..name = "NFT Name"
@@ -72,7 +76,11 @@ class _HomePageState extends State<HomePage> {
       };
 
       // upload metadata
-      await pinata.pinJSONToIPFS(jsonBody);
+      final metadataResponse = await pinata.pinJSONToIPFS(jsonBody);
+      if (metadataResponse != null  && metadataResponse.statusCode == 200) {
+          cidImageMetadata = metadataResponse.data["IpfsHash"];
+          showSnackBarWithMessage("Metadata uploaded successfully!, Cid:$cidImageMetadata");
+      }
     }
   }
 
@@ -121,9 +129,32 @@ class _HomePageState extends State<HomePage> {
                     );
                   },
                 ),
-              )
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  child: const Text('Mint NFT'),
+                  onPressed: () {
+                    if (cidImageMetadata.isNotEmpty) {
+                      NftContract().mintWithCid(cidImageMetadata);
+                    }
+                  },
+                ),
+              ),
             ]),
           ),
         ));
   }
+
+    showSnackBarWithMessage (String message) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(message)
+          ],
+        ),
+      ));
+    }
 }

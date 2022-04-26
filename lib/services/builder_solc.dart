@@ -20,6 +20,10 @@ class SolcBuilder {
     return jsonSolcStr.replaceAll("\n","").replaceAll(RegExp(r'\s{2,}'), " ");
   }
 
+  static Future<void> generateAbiToFile(String fileName, String abi) async {
+    writeAbiFile(fileName, abi);
+  }
+
   static Future<String> getContractSourceCode() async {
     final contractText = await getContractSol("contracts/nfts/myNftTokenCondensed.sol");
     return contractText.replaceAll("\n","").replaceAll(RegExp(r'\s{2,}'), " ");
@@ -50,9 +54,10 @@ class SolcBuilder {
     final abi = resultJson["contracts"]["contract"]["MyNftTokenCondensed"]["abi"];
     final bytecode = resultJson["contracts"]["contract"]["MyNftTokenCondensed"]["evm"]["bytecode"]["object"];
     // print("Compilation Result: $resultJson");
-    // print("Compilation abi: $abi");
+
     // print("Compilation bytecode: $bytecode");
     final abiStr = json.encode(abi);
+    print("Compilation abi: $abiStr");
 
     // Deploy contract
     await controller.runJavascript('abi=JSON.stringify($abiStr);' 'bytecode="$bytecode"');
@@ -76,10 +81,10 @@ class SolcBuilder {
     return str.replaceAll("\n"," ");
   }
 
-  static Future<bool> writeAbiFile(String fileName, dynamic object) async {
+  static Future<bool> writeAbiFile(String fileName, String abi) async {
     try {
       File myFile = File('lib/$fileName.abi.json');
-      await myFile.writeAsString(jsonEncode(object));
+      await myFile.writeAsString(abi);
       return true;
     } catch (e) {
       return false;
