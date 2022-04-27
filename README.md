@@ -17,11 +17,7 @@
 [![MIT License][license-shield]][license-url] -->
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-
-
-https://user-images.githubusercontent.com/2497884/165625900-6f334258-116f-4acb-a34e-678553a1b638.mp4
-
-
+https://user-images.githubusercontent.com/2497884/165626785-c2d2f1bc-347d-458f-8a96-ccb3a1676a58.mp4
 
 
 <!-- PROJECT LOGO -->
