@@ -37,7 +37,6 @@ https://user-images.githubusercontent.com/2497884/165626785-c2d2f1bc-347d-458f-8
     <!-- <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a> -->
     <br />
     <br />
-    <a href="">View Demo</a>
     ·
     <!-- <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
     ·
