@@ -13,7 +13,7 @@ const String wsUrlMumbai = 'wss://polygon-mumbai.g.alchemy.com/v2/wDKjb83mAC3ok5
 const String privateKey =
     'c07dc9fe23081f4f06d1c1f8211f2627be0b178c47bddd3ad06177fffe3c5d5f';
 final EthereumAddress contractAddr =
-EthereumAddress.fromHex('0x9Aa0202e64140644Ca73Abb1155d1DE7FBC941b2');
+EthereumAddress.fromHex('0xCfE4ecad82013a2b887330C7896E7BF5b803c07A');
 
 // final EthereumAddress receiver = EthereumAddress.fromHex('0x6c87E1a114C3379BEc929f6356c5263d62542C13');
 

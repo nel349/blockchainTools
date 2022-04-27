@@ -49,10 +49,18 @@ class SolcBuilder {
           //SHOW SOME LOADING STATE
         });
 
+    // Sometimes we need to decode again. Check
     final resultJson = await json.decode(compiledContractResult);
-    // final resultB = await json.decode(resultJson);
-    final abi = resultJson["contracts"]["contract"]["MyNftTokenCondensed"]["abi"];
-    final bytecode = resultJson["contracts"]["contract"]["MyNftTokenCondensed"]["evm"]["bytecode"]["object"];
+
+    final resultB;
+    if (resultJson is String) {
+      resultB = await json.decode(resultJson);
+    } else {
+      resultB = resultJson;
+    }
+
+    final abi = resultB["contracts"]["contract"]["MyNftTokenCondensed"]["abi"];
+    final bytecode = resultB["contracts"]["contract"]["MyNftTokenCondensed"]["evm"]["bytecode"]["object"];
     // print("Compilation Result: $resultJson");
 
     // print("Compilation bytecode: $bytecode");
@@ -66,10 +74,11 @@ class SolcBuilder {
     contractStream.checkJavascriptResult(controller)
         .firstWhere((element) => element.startsWith('0x'))
         .then((value) async {
-          await controller.runJavascript('removeLoader()');
-          await controller.runJavascript('showResults()');
           print("Transaction Hash: $value");
     });
+
+    await controller.runJavascript('removeLoader()');
+    await controller.runJavascript('showResults()');
   }
 
   Future getPaths() async {

@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
       final pinataMetadata = PinataMetadata()
       ..name = "${(fileName as String).replaceFirst(".jpg", "_")}Metadata";
 
-      String imageCid = response.data["IpfsHash"];
+      String? imageCid = response.data["IpfsHash"];
       cidImage = imageCid ?? "";
 
       Metadata metadata = Metadata()
@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Upload NFT Image'),
+          title: const Text('NFT Deploy Engine'),
         ),
         body: SafeArea(
           child: Container(
@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
               child: Builder(
                 builder: (context) {
                   if (!isLoading) {
-                    return buildOptionsColumn();
+                    return buildOptionsColumn(context);
                   } else {
                     return Center(child: CircularProgressIndicator());
                   }
@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  Widget buildOptionsColumn() {
+  Widget buildOptionsColumn(BuildContext context) {
     return Column(children: [
       Center(
         child: ElevatedButton(
