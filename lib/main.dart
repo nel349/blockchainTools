@@ -10,7 +10,7 @@ import 'screens/profile.dart';
 import 'screens/register.dart';
 import 'screens/services.dart';
 import 'screens/settings.dart';
-import 'views/imagePickerHome.dart';
+import 'views/image_picker_home.dart';
 import 'views/webview_screen.dart';
 
 void main() {

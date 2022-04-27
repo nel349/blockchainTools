@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   File? _image;
   String cidImage = "";
   String cidImageMetadata = "";
+  bool isLoading = false;
 
   final _picker = ImagePicker();
   // Implementing the image picker
@@ -46,11 +47,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _uploadImageToPinata() async {
-
     final pinata = Pinata();
-
     Response<dynamic>? response;
     if (_image != null){
+      setState(() {
+        isLoading = true;
+      });
       // upload image
       response = await pinata.pinFileToIPFS(file: _image!);
     }
@@ -79,6 +81,7 @@ class _HomePageState extends State<HomePage> {
       final metadataResponse = await pinata.pinJSONToIPFS(jsonBody);
       if (metadataResponse != null  && metadataResponse.statusCode == 200) {
           cidImageMetadata = metadataResponse.data["IpfsHash"];
+          setState(() {isLoading = false;});
           showSnackBarWithMessage("Metadata uploaded successfully!, Cid:$cidImageMetadata");
       }
     }
@@ -101,57 +104,71 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Padding(
               padding: const EdgeInsets.all(20),
-              child: Column(children: [
-                Center(
-                  child: ElevatedButton(
-                    child: const Text('Smart Contract deployment'),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (_) => WebViewExample())
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Center(
-                  child: ElevatedButton(
-                    child: const Text('Select An Image'),
-                    onPressed: _openImagePicker,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  alignment: Alignment.center,
-                  width: double.infinity,
-                  height: 200,
-                  color: Colors.transparent,
-                  child: _image != null
-                      ? Image.file(_image!, fit: BoxFit.cover)
-                      : const Text('Please select an image'),
-                ),
-                const SizedBox(height: 20),
-                Center(
-                  child: ElevatedButton(
-                    child: const Text('Upload to IPFS'),
-                    onPressed: _uploadImageToPinata,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Center(
-                  child: ElevatedButton(
-                    child: const Text('Mint NFT'),
-                    onPressed: () {
-                      if (cidImageMetadata.isNotEmpty) {
-                        NftContract().mintWithCid(cidImageMetadata);
-                      }
-                    },
-                  ),
-                ),
-              ]),
+              child: Builder(
+                builder: (context) {
+                  if (!isLoading) {
+                    return buildOptionsColumn();
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                }
+              ),
             ),
           ),
         ));
+  }
+
+  Widget buildOptionsColumn() {
+    return Column(children: [
+      Center(
+        child: ElevatedButton(
+          child: const Text('Smart Contract deployment'),
+          onPressed: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (_) => WebViewExample())
+            );
+          },
+        ),
+      ),
+      const SizedBox(height: 20),
+      Center(
+        child: ElevatedButton(
+          child: const Text('Select An Image'),
+          onPressed: _openImagePicker,
+        ),
+      ),
+      const SizedBox(height: 20),
+      Container(
+        alignment: Alignment.center,
+        width: double.infinity,
+        height: 200,
+        color: Colors.transparent,
+        child: _image != null
+            ? Image.file(_image!, fit: BoxFit.cover)
+            : const Text('Please select an image'),
+      ),
+      const SizedBox(height: 20),
+      Center(
+        child: ElevatedButton(
+          child: const Text('Upload to IPFS'),
+          onPressed: _uploadImageToPinata,
+        ),
+      ),
+      const SizedBox(height: 20),
+      Center(
+        child: ElevatedButton(
+          child: const Text('Mint NFT'),
+          onPressed: () {
+            if (cidImageMetadata.isNotEmpty) {
+              setState(() {isLoading = true;});
+              NftContract().mintWithCid(cidImageMetadata);
+              setState(() {isLoading = false;});
+            }
+          },
+        ),
+      ),
+    ]);
   }
 
     showSnackBarWithMessage (String message) {
