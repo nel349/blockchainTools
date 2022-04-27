@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js" type="text/javascript"></script>
+	<script src="hdwallet-provider-min.js"></script>
+	<script src="web3_deployer.js" type="text/javascript"></script>
+	<style>
+		/* Center the loader */
+		#loader {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			z-index: 1;
+			width: 120px;
+			height: 120px;
+			margin: -76px 0 0 -76px;
+			border: 16px solid #f3f3f3;
+			border-radius: 50%;
+			border-top: 16px solid #3498db;
+			-webkit-animation: spin 2s linear infinite;
+			animation: spin 2s linear infinite;
+		}
+		
+		@-webkit-keyframes spin {
+			0% { -webkit-transform: rotate(0deg); }
+			100% { -webkit-transform: rotate(360deg); }
+		}
+		
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+		
+		/* Add animation to "page content" */
+		.animate-bottom {
+			position: relative;
+			-webkit-animation-name: animatebottom;
+			-webkit-animation-duration: 1s;
+			animation-name: animatebottom;
+			animation-duration: 1s
+		}
+		
+		@-webkit-keyframes animatebottom {
+			from { bottom:-100px; opacity:0 } 
+			to { bottom:0px; opacity:1 }
+		}
+		
+		@keyframes animatebottom { 
+			from{ bottom:-100px; opacity:0 } 
+			to{ bottom:0; opacity:1 }
+		}
+		
+		#myDiv {
+			display: none;
+			text-align: center;
+		}
+		
+		body {
+			background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+			background-size: 400% 400%;
+			animation: gradient 15s ease infinite;
+			height: 100vh;
+		}
+		
+		@keyframes gradient {
+			0% {
+				background-position: 0% 50%;
+			}
+			50% {
+				background-position: 100% 50%;
+			}
+			100% {
+				background-position: 0% 50%;
+			}
+		}
+	</style>
+</head>
+<body onload="showInitialPage()" style="margin:0;">
+	
+	<button onclick="showLoader()">Show Loader</button>
+	<button onclick="removeLoader()">Remove Loader</button>
+	<button onclick="showResults()">Show Results</button>
+	
+	<div id="loader"></div>
+	
+	<div style="display:none;" id="myDiv" class="animate-bottom">
+		<header>
+			<p style="margin-top:20px; font-size:25px; font-weight:bold; color:White;">
+				Success! 
+				Compilation Details 
+			</p>
+		</header>
+		<div class="container">
+			<div class="col-md-5">
+				<p id="status" style="float:right; margin-top:20px"></p>
+				<textarea id="compile-output" onclick="this.select()" style="height:100vw; width:90vw;" readonly></textarea>
+			</div>
+		</div>
+	</div>
+	
+	<div style="display:none;" id="initial" class="animate-bottom">
+		<header>
+			<p style="margin-top:20px; font-size:25px; font-weight:bold; color:White;">
+				Press rocket to compile and deploy
+			</p>
+		</header>
+	</div>
+	
+	<script>
+		var myVar;
+		
+		function myFunction() {
+			myVar = setTimeout(showLoader, 11000);
+		}
+		
+		function showLoader() {
+			
+			var x = document.getElementById("loader");
+			if (x.style.display === "none") {
+				x.style.display = "block";
+			} else {
+				x.style.display = "block";
+			}
+		}
+		
+		function removeLoader() {
+			
+			var x = document.getElementById("loader");
+			if (x.style.display === "block") {
+				x.style.display = "none";
+			} else {
+				x.style.display = "none";
+			}
+		}
+		
+		function showInitialPage() {
+			document.getElementById("loader").style.display = "none";
+			document.getElementById("initial").style.display = "block";
+		}
+		
+		function showResults() {
+			document.getElementById("loader").style.display = "none";
+			document.getElementById("initial").style.display = "none";
+			document.getElementById("myDiv").style.display = "block";
+		}
+	</script>
+	
+	<script id="testscript" type="text/javascript">
+		var compiledCode="";
+		var sourceCode="";
+		
+		function workerCros(url) {
+			const iss = "importScripts('" + url + "');";
+			return URL.createObjectURL(new Blob([iss]));
+		}
+		
+		function loadSolJson() {
+			if(typeof(Worker) !== "undefined") {
+				if(typeof(w) == "undefined") {
+					const workerUrl = workerCros(new URL('solJsonLoaderWorker.js', window.location).href);
+					w = new Worker(workerUrl);
+					// var exampleSource = "pragma solidity ^0.8.13;contract Investment {event CheckBalance(address indexed from, uint256 amount);uint256 balanceAmount;uint256 depositAmount;uint256 thresholdAmount;uint256 returnOnInvestment;constructor() {balanceAmount = getBalanceAmount();depositAmount = 0;thresholdAmount = 12;returnOnInvestment = 3;emit CheckBalance(msg.sender, balanceAmount);}function getBalanceAmount() public view returns (uint256) {return msg.sender.balance / (1e16);}function getDepositAmount() public view returns (uint256) {return depositAmount;}function addDepositAmount(uint256 amount) public {depositAmount = depositAmount + amount;if (depositAmount >= thresholdAmount) {balanceAmount = depositAmount + returnOnInvestment;}}function withdrawBalance() public {balanceAmount = 0;depositAmount = 0;} }" //testing
+					
+					w.postMessage(sourceCode);
+				}
+				w.onmessage = function(event) {
+					compiledCode = event.data;
+					document.getElementById("compile-output").value = compiledCode;
+				};
+			}
+		}
+		
+		function getCompiledCode() {
+			return compiledCode;
+		}
+		
+	</script>
+	
+</body>
+</html>

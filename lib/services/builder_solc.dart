@@ -65,7 +65,11 @@ class SolcBuilder {
 
     contractStream.checkJavascriptResult(controller)
         .firstWhere((element) => element.startsWith('0x'))
-        .then((value) => print("Transaction Hash: $value"));
+        .then((value) async {
+          await controller.runJavascript('removeLoader()');
+          await controller.runJavascript('showResults()');
+          print("Transaction Hash: $value");
+    });
   }
 
   Future getPaths() async {

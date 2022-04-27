@@ -67,10 +67,10 @@ class _WebViewExampleState extends State<WebViewExample> {
       // to allow calling Scaffold.of(context) so we can show a snackbar.
       body: Builder(builder: (BuildContext context) {
         return WebView(
-          initialUrl: 'https://flutter.dev',
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
             _controller.complete(webViewController);
+            webViewController.loadFlutterAsset('contract_resources/newIndex.html');
           },
           onProgress: (int progress) {
             print('WebView is loading (progress : $progress%)');
@@ -96,7 +96,8 @@ class _WebViewExampleState extends State<WebViewExample> {
           backgroundColor: const Color(0x00000000),
         );
       }),
-      floatingActionButton: favoriteButton(),
+      floatingActionButton: compileButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -111,7 +112,7 @@ class _WebViewExampleState extends State<WebViewExample> {
         });
   }
 
-  Widget favoriteButton() {
+  Widget compileButton() {
     return FutureBuilder<WebViewController>(
         future: _controller.future,
         builder: (BuildContext context,
@@ -119,17 +120,32 @@ class _WebViewExampleState extends State<WebViewExample> {
           if (controller.hasData) {
             return FloatingActionButton(
               onPressed: () async {
-                final String url = (await controller.data!.currentUrl())!;
-                // ignore: deprecated_member_use
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(content: Text('Favorited $url')),
-                );
+                _onCompileSolc(controller.data!, context);
               },
-              child: const Icon(Icons.favorite),
+              child: const Icon(Icons.rocket, size: 40,),
+              isExtended: true,
+              tooltip: "Compile and deploy",
             );
           }
           return Container();
         });
+  }
+
+  Future<void> _onCompileSolc(WebViewController controller,
+      BuildContext context)  async {
+    await controller.runJavascript('showLoader()');
+    final contractSourceCode = await SolcBuilder.getContractSourceCode();
+    await SolcBuilder.compile(controller, contractSourceCode);
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text('Compilation Result ended!')
+        ],
+      ),
+    ));
   }
 }
 

@@ -84,7 +84,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,56 +91,65 @@ class _HomePageState extends State<HomePage> {
           title: const Text('Upload NFT Image'),
         ),
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(35),
-            child: Column(children: [
-              Center(
-                child: ElevatedButton(
-                  child: const Text('Select An Image'),
-                  onPressed: _openImagePicker,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [Color(0xFF283593), Colors.white70],
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(children: [
+                Center(
+                  child: ElevatedButton(
+                    child: const Text('Smart Contract deployment'),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => WebViewExample())
+                      );
+                    },
+                  ),
                 ),
-              ),
-              const SizedBox(height: 35),
-              Container(
-                alignment: Alignment.center,
-                width: double.infinity,
-                height: 300,
-                color: Colors.grey[300],
-                child: _image != null
-                    ? Image.file(_image!, fit: BoxFit.cover)
-                    : const Text('Please select an image'),
-              ),
-              const SizedBox(height: 35),
-              Center(
-                child: ElevatedButton(
-                  child: const Text('Upload to Pinata'),
-                  onPressed: _uploadImageToPinata,
+                const SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton(
+                    child: const Text('Select An Image'),
+                    onPressed: _openImagePicker,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Center(
-                child: ElevatedButton(
-                  child: const Text('Go to Smart Contract Deployment'),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (_) => WebViewExample())
-                    );
-                  },
+                const SizedBox(height: 20),
+                Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  height: 200,
+                  color: Colors.transparent,
+                  child: _image != null
+                      ? Image.file(_image!, fit: BoxFit.cover)
+                      : const Text('Please select an image'),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Center(
-                child: ElevatedButton(
-                  child: const Text('Mint NFT'),
-                  onPressed: () {
-                    if (cidImageMetadata.isNotEmpty) {
-                      NftContract().mintWithCid(cidImageMetadata);
-                    }
-                  },
+                const SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton(
+                    child: const Text('Upload to IPFS'),
+                    onPressed: _uploadImageToPinata,
+                  ),
                 ),
-              ),
-            ]),
+                const SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton(
+                    child: const Text('Mint NFT'),
+                    onPressed: () {
+                      if (cidImageMetadata.isNotEmpty) {
+                        NftContract().mintWithCid(cidImageMetadata);
+                      }
+                    },
+                  ),
+                ),
+              ]),
+            ),
           ),
         ));
   }
